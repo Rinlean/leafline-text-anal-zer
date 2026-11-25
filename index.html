@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leafline — Document analysis</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="frame header-inner">
+      <span class="brand"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span>Leafline</span>
+      <button id="theme" class="theme-toggle" type="button" role="switch" aria-checked="false">
+        Dark mode <span class="switch-track" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+  <main class="frame">
+    <div class="intro">
+      <h1>Document analysis</h1>
+      <p>Explore word patterns and summarize a document in seconds.</p>
+    </div>
+    <div class="workspace">
+      <form id="analysis-form" class="panel">
+        <h2>Source material</h2>
+        <fieldset id="source-switch" class="source-switch">
+          <legend>Input source</legend>
+          <label><input type="radio" name="source" value="text" checked> Text</label>
+          <label><input type="radio" name="source" value="pdf"> PDF</label>
+        </fieldset>
+        <div id="text-source">
+          <label for="text">Text</label>
+          <textarea id="text" rows="9" placeholder="Paste or type your text here…"></textarea>
+        </div>
+        <div id="pdf-source" class="attachment" hidden>
+          <label for="pdf">PDF attachment</label>
+          <input type="file" id="pdf" accept=".pdf,application/pdf" aria-describedby="pdf-help">
+          <small id="pdf-help">Choose a PDF with selectable text, up to 20 MB.</small>
+          <button id="remove-pdf" type="button" class="secondary" hidden>Remove PDF</button>
+        </div>
+        <label class="summary-option"><input id="include-summary" type="checkbox" checked> Generate AI summary</label>
+        <small>With AI enabled, Leafline sends the extracted or typed text to OpenRouter.</small>
+        <button id="go" class="primary" type="submit">Analyze document <span aria-hidden="true">↗</span></button>
+        <p id="status" role="status" hidden></p>
+      </form>
+
+      <section class="panel results" aria-labelledby="results-title">
+        <h2 id="results-title">Results</h2>
+        <p id="empty">Add text or a PDF to see your analysis here.</p>
+        <div id="out" hidden>
+          <dl class="metrics">
+            <div><dt>Words</dt><dd id="wc"></dd></div>
+            <div><dt>Unique words</dt><dd id="unique"></dd></div>
+            <div><dt>Characters</dt><dd id="characters"></dd></div>
+          </dl>
+          <section class="result-section">
+            <h3>Most frequent words</h3>
+            <ol id="freq"></ol>
+            <small>Up to five words, excluding words shorter than three characters.</small>
+          </section>
+          <section id="summary-section" class="result-section" hidden>
+            <div class="section-heading"><h3>AI summary</h3><button id="copy" class="secondary" type="button" disabled>Copy</button></div>
+            <p id="sum" aria-live="polite"></p>
+            <small id="model" hidden></small>
+            <small id="copy-status" role="status"></small>
+          </section>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
