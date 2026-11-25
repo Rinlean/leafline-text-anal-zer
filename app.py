@@ -27,6 +27,7 @@ def home():
 @app.route("/index.html", defaults={"filename": "index.html"})
 @app.route("/app.js", defaults={"filename": "app.js"})
 @app.route("/style.css", defaults={"filename": "style.css"})
+@app.route("/favicon.svg", defaults={"filename": "favicon.svg"})
 def files(filename):
     return send_from_directory(BASE, filename)
 

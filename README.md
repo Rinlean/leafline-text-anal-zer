@@ -1,62 +1,81 @@
+<p align="center">
+  <img src="./favicon.svg" width="64" height="64" alt="">
+</p>
+
 # Leafline
 
-Leafline analyzes pasted text and PDFs with selectable text. It counts words, unique words and characters, ranks frequent words, and can generate an AI summary.
+**Document analysis and AI summarization in the browser.** Paste text or upload a PDF to see word statistics and generate an optional summary.
 
-## Run locally on Windows
+[Quick start](#quick-start) · [Usage](#usage) · [Architecture](#architecture) · [Deploy](#deploy) · [Word documentation](./Leafline-Documentation.docx)
 
-From the project directory, run these commands in PowerShell.
+## Features
+
+- **Text or PDF input** — Switch sources while keeping your draft and attachment. Each analysis uses the selected source.
+- **Word statistics** — See total words, unique words, characters, and the five most frequent qualifying words.
+- **Optional AI summary** — Copy the result and see the model identifier when OpenRouter provides it. Statistics remain available if the summary fails.
+- **Light and dark modes** — The interface starts with your device preference and remembers your choice.
+
+## Quick start
+
+You'll need Python 3. An [OpenRouter API key](https://openrouter.ai/keys) is required only for AI summaries.
+
+From the project directory, create a virtual environment and install dependencies.
 
 ```powershell
 python -m venv venv
 .\venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-For AI summaries, add your OpenRouter key to the local `.env` beside `app.py`. Keep this file private. The repository ignores it.
+To enable AI, create or edit `.env` beside `app.py`.
 
 ```dotenv
 OPENROUTER_KEY=your_openrouter_api_key
 ```
 
+Keep `.env` private. Git ignores this file.
+
 ```powershell
 .\venv\Scripts\python.exe app.py
 ```
 
-Open [http://localhost:5000](http://localhost:5000). Restart Flask after changing the key.
+Open [localhost:5000](http://localhost:5000). On macOS or Linux, use `./venv/bin/python` in place of the Windows virtual environment executable. Restart Flask after changing `.env`.
 
-## Analyze a document
+## Usage
 
-1. Select **Text** to type or paste text, or **PDF** to upload a document. Both outputs use the selected source. Switching preserves your draft and attachment. Use **Remove PDF** to clear the attachment.
-2. Leave **Generate AI summary** checked to request a summary. Uncheck it to calculate statistics entirely in your browser.
-3. Select **Analyze document**. The results show total and distinct words, character count including spaces, and up to five frequent words. Word counts are case-insensitive, recognize Unicode letters and numbers, and keep internal apostrophes and hyphens. The ranking excludes words shorter than three characters.
-4. Copy the summary when it is ready. Leafline shows the model identifier when OpenRouter reports it. Local results remain available if summarization fails.
-5. Use the **Dark mode** switch to toggle between Light and Dark. Leafline starts with your device preference and remembers your selection when browser storage is available.
+1. Select **Text** to type or paste content, or select **PDF** to attach a document with selectable text.
+2. Leave **Generate AI summary** checked to request a summary. Uncheck it for browser-only statistics.
+3. Click **Analyze document** and review the results. Use **Copy** to copy a completed summary.
 
-## Tools and model
+For a quick check, enter `Text text analysis`. Expect **3 words**, **2 unique words**, **18 characters**, and **text** at the top with **2 occurrences**. Word matching is case-insensitive. The frequency ranking excludes terms shorter than three characters.
+
+## Architecture
+
+The browser extracts PDF text and computes the statistics locally. With AI enabled, it sends the selected text to Flask at `POST /api/summarize`. Flask validates the request and forwards the text to OpenRouter. The PDF file itself stays in the browser, and the API key stays on the server.
 
 | Tool | Role |
 | --- | --- |
-| HTML, CSS and JavaScript | Responsive interface, themes, browser-side statistics and clipboard interaction |
-| PDF.js 2.10.377 | Extracts the text layer from PDFs in the browser via a CDN |
-| Python and Flask | Serves the interface and handles `POST /api/summarize` |
-| Requests and python-dotenv | Calls OpenRouter over HTTPS and loads the local API key |
-| OpenRouter Chat Completions | Uses [`openrouter/free`](https://openrouter.ai/openrouter/free), which selects an available free model. The actual model can vary between requests. |
-| Gunicorn | Runs Flask on a compatible production host using `gunicorn app:app` |
+| HTML, CSS, JavaScript | Responsive interface, themes, text analysis, and clipboard interaction |
+| PDF.js 2.10.377 | Extracts selectable text from PDFs in the browser |
+| Flask, Requests, python-dotenv | Serves the app, validates summary requests, calls OpenRouter, and loads local configuration |
+| [OpenRouter Free Models Router](https://openrouter.ai/openrouter/free) | Routes requests using `openrouter/free`. The underlying model can vary between requests. |
+| Gunicorn | Runs Flask in deployment |
 
-## Data flow and limits
+### Project layout
 
-PDF files stay in the browser. If AI is enabled, the browser sends the selected source text to Flask, which forwards it to OpenRouter with a summarization instruction. The key stays on the server. Review AI output against the source before relying on it.
+| Path | Contents |
+| --- | --- |
+| [app.py](./app.py) | Flask routes and OpenRouter integration |
+| [index.html](./index.html), [style.css](./style.css), [app.js](./app.js) | Browser interface and analysis |
+| [favicon.svg](./favicon.svg) | Leafline browser tab icon |
+| [requirements.txt](./requirements.txt), [Procfile](./Procfile) | Python dependencies and deployment entry point |
+| [Leafline-Documentation.docx](./Leafline-Documentation.docx) | Project guide with usage, data flow, tools, and demonstration checks |
 
-PDF files may be up to 20 MB and must contain selectable text. For scanned documents, use an OCR tool and paste its output. AI summaries accept up to 30,000 characters. For longer text, turn AI off to view local statistics or summarize a shorter excerpt.
+## Limits
 
-## Quick verification
+- PDFs may be up to **20 MB**. For scanned documents, extract the text with an OCR tool and paste it into Text mode.
+- AI summaries accept up to **30,000 characters**. Use a shorter excerpt for the summary, or disable AI to analyze the full text locally.
+- Check AI-generated summaries against the source before relying on them.
 
-- Paste `Text text analysis` with AI off. Expect 3 words, 2 unique words, and `text` at the top with 2 occurrences.
-- Switch to PDF, attach a selectable-text document, and verify the counts reflect only the PDF. Switch back to Text and verify the original counts.
-- Enable AI and check the summary, model display when provided, and Copy button. If AI fails, verify the counts remain visible.
-- Switch between Light and Dark and reload to verify the preference.
+## Deploy
 
-## Deployment
-
-GitHub Pages can serve the static frontend. The full app needs a Python host for Flask and OpenRouter. Set `OPENROUTER_KEY` in the host's environment and use the included Gunicorn command. Restrict access to the summary endpoint before exposing a shared API key to public traffic.
-
-See [the Word guide](Leafline-Documentation.docx) for the feature walkthrough and architecture.
+Use a Python web service such as [Render](https://render.com/docs/deploy-flask) to serve the frontend and API together. For Render, use `pip install -r requirements.txt` as the build command and `gunicorn --timeout 90 app:app` as the start command. Set `OPENROUTER_KEY` in the host's environment variables. Restrict access to the summary endpoint before exposing a shared key to public traffic.
