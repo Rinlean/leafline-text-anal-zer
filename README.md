@@ -15,6 +15,7 @@
 - **Reading Map** — Trace a frequent word back to the original document. See up to five highlighted excerpts for the selected word, with PDF page numbers or paragraph numbers for pasted text. It runs in the browser, including when AI is off.
 - **Optional AI summary** — Copy the result and see the model identifier when OpenRouter provides it. Statistics remain available if the summary fails.
 - **Light and dark modes** — The interface starts with your device preference and remembers your choice.
+- **Responsive workspace** — The source editor and Results panel sit side by side on desktop and stack on smaller screens.
 
 ## Quick start
 
@@ -43,10 +44,10 @@ Open [localhost:5000](http://localhost:5000). On macOS or Linux, use `./venv/bin
 
 ## Usage
 
-1. Select **Text** to type or paste content, or select **PDF** to attach a document with selectable text.
+1. In **Source document**, select **Paste text** to type or paste content, or **Upload PDF** to attach a document with selectable text.
 2. Leave **Generate AI summary** checked to request a summary. Uncheck it for browser-only statistics.
-3. Click **Analyze document** and review the results. Use **Copy** to copy a completed summary.
-4. In **Reading Map**, choose a frequent word to see where it appears. The map shows matching passages in source order and reports how many it found.
+3. Click **Analyze document**. The **Results** panel starts with word and character counts, followed by the AI summary when enabled. Use **Copy** to copy a completed summary.
+4. Below **Most frequent words**, use **Reading Map** to choose a word to trace. The map shows matching passages in source order and reports how many it found.
 
 For a quick check, enter `Text text analysis`. Expect **3 words**, **2 unique words**, **18 characters**, and **text** at the top with **2 occurrences**. Word matching is case-insensitive. The frequency ranking excludes terms shorter than three characters.
 

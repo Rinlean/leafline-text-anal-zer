@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Leafline — Document analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Instrument+Serif&display=swap">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
@@ -19,17 +22,20 @@
     </div>
   </header>
   <main class="frame">
-    <div class="intro">
-      <h1>Document analysis</h1>
-      <p>Explore word patterns and summarize a document in seconds.</p>
-    </div>
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <h1 id="page-title">Document analysis</h1>
+        <p>Explore word patterns, trace them to the source, and summarize your document.</p>
+      </div>
+      <div class="paper-stack" aria-hidden="true"><div class="paper"><i></i><i></i><i></i><i></i></div></div>
+    </section>
     <div class="workspace">
       <form id="analysis-form" class="panel">
-        <h2>Source material</h2>
+        <h2>Source document</h2>
         <fieldset id="source-switch" class="source-switch">
           <legend>Input source</legend>
-          <label><input type="radio" name="source" value="text" checked> Text</label>
-          <label><input type="radio" name="source" value="pdf"> PDF</label>
+          <label><input type="radio" name="source" value="text" checked> Paste text</label>
+          <label><input type="radio" name="source" value="pdf"> Upload PDF</label>
         </fieldset>
         <div id="text-source">
           <label for="text">Text</label>
@@ -41,39 +47,48 @@
           <small id="pdf-help">Choose a PDF with selectable text, up to 20 MB.</small>
           <button id="remove-pdf" type="button" class="secondary" hidden>Remove PDF</button>
         </div>
-        <label class="summary-option"><input id="include-summary" type="checkbox" checked> Generate AI summary</label>
-        <small>With AI enabled, Leafline sends the extracted or typed text to OpenRouter.</small>
+        <div class="summary-settings">
+          <input id="include-summary" type="checkbox" checked aria-describedby="summary-privacy">
+          <div>
+            <label for="include-summary">Generate AI summary</label>
+            <small id="summary-privacy">Sends the selected text to OpenRouter.</small>
+          </div>
+        </div>
         <button id="go" class="primary" type="submit">Analyze document <span aria-hidden="true">↗</span></button>
         <p id="status" role="status" hidden></p>
       </form>
 
       <section class="panel results" aria-labelledby="results-title">
         <h2 id="results-title">Results</h2>
-        <p id="empty">Add text or a PDF to see your analysis here.</p>
+        <div id="empty">
+          <span class="empty-mark mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <p><strong>Ready when you are</strong></p>
+          <p>Analyze a source document to see its word counts, Reading Map, and optional AI summary.</p>
+        </div>
         <div id="out" hidden>
           <dl class="metrics">
             <div><dt>Words</dt><dd id="wc"></dd></div>
             <div><dt>Unique words</dt><dd id="unique"></dd></div>
             <div><dt>Characters</dt><dd id="characters"></dd></div>
           </dl>
+          <section id="summary-section" class="result-section" hidden>
+            <div class="section-heading"><h3>AI summary</h3><button id="copy" class="secondary" type="button" disabled>Copy</button></div>
+            <p id="sum" aria-live="polite"></p>
+            <small id="model" hidden></small>
+            <small id="copy-status" role="status"></small>
+          </section>
           <section class="result-section">
             <h3>Most frequent words</h3>
             <ol id="freq"></ol>
             <small>Up to five words, excluding words shorter than three characters.</small>
           </section>
-          <section class="result-section" aria-labelledby="reading-map-title">
+          <section class="result-section reading-map" aria-labelledby="reading-map-title">
             <h3 id="reading-map-title">Reading Map</h3>
             <p class="map-help">Find where a frequent word appears in the original text.</p>
             <label for="map-term">Word to trace</label>
             <select id="map-term"></select>
             <small id="map-count" role="status"></small>
             <ol id="map-passages" class="map-passages"></ol>
-          </section>
-          <section id="summary-section" class="result-section" hidden>
-            <div class="section-heading"><h3>AI summary</h3><button id="copy" class="secondary" type="button" disabled>Copy</button></div>
-            <p id="sum" aria-live="polite"></p>
-            <small id="model" hidden></small>
-            <small id="copy-status" role="status"></small>
           </section>
         </div>
       </section>
