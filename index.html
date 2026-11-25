@@ -61,6 +61,14 @@
             <ol id="freq"></ol>
             <small>Up to five words, excluding words shorter than three characters.</small>
           </section>
+          <section class="result-section" aria-labelledby="reading-map-title">
+            <h3 id="reading-map-title">Reading Map</h3>
+            <p class="map-help">Find where a frequent word appears in the original text.</p>
+            <label for="map-term">Word to trace</label>
+            <select id="map-term"></select>
+            <small id="map-count" role="status"></small>
+            <ol id="map-passages" class="map-passages"></ol>
+          </section>
           <section id="summary-section" class="result-section" hidden>
             <div class="section-heading"><h3>AI summary</h3><button id="copy" class="secondary" type="button" disabled>Copy</button></div>
             <p id="sum" aria-live="polite"></p>

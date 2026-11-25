@@ -94,6 +94,11 @@ dd { margin: 5px 0 0; font-size: clamp(1.1rem, 2.6vw, 1.65rem); font-weight: 750
 .result-section { border-top: 1px solid var(--line); margin-top: 20px; padding-top: 17px; }
 #freq { padding-inline-start: 22px; margin: 10px 0; overflow-wrap: anywhere; }
 #freq li { padding: 4px 0; }
+.map-help { color: var(--muted); margin: 6px 0 12px; }
+#map-term { max-width: 100%; margin: 0 0 8px 6px; }
+.map-passages { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.map-passages li { background: var(--soft); border-radius: 9px; padding: 10px 12px; overflow-wrap: anywhere; }
+.map-passages mark { background: var(--green); color: var(--on-green); border-radius: 3px; }
 #sum { margin-top: 10px; white-space: pre-wrap; overflow-wrap: anywhere; }
 #model, #copy-status { margin-top: 8px; overflow-wrap: anywhere; }
 @media (max-width: 760px) { .workspace { grid-template-columns: 1fr; } }

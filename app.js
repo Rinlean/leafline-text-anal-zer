@@ -56,14 +56,17 @@ async function extractPdfText(file) {
     }
     const text = pages.join("\n").trim();
     if (!text) throw new Error("This PDF has no selectable text. For scans, paste text from an OCR tool.");
-    return text;
+    return pages;
   } finally {
     await task.destroy();
   }
 }
 
+const wordPattern = /[\p{L}\p{N}][\p{L}\p{N}\p{M}]*(?:[’'-][\p{L}\p{N}][\p{L}\p{N}\p{M}]*)*/gu;
+const normalizeWord = (word) => word.toLowerCase().normalize("NFC");
+
 function analyzeLocally(text) {
-  const words = text.toLowerCase().normalize("NFC").match(/[\p{L}\p{N}][\p{L}\p{N}\p{M}]*(?:[’'-][\p{L}\p{N}][\p{L}\p{N}\p{M}]*)*/gu) || [];
+  const words = (text.match(wordPattern) || []).map(normalizeWord);
   const counts = new Map();
   for (const word of words) counts.set(word, (counts.get(word) || 0) + 1);
   const top = [...counts].filter(([word]) => [...word].length >= 3)
@@ -76,6 +79,60 @@ function analyzeLocally(text) {
     item.textContent = `${word} · ${count.toLocaleString()}`;
     return item;
   }) : [Object.assign(document.createElement("li"), { textContent: "No qualifying words." })]));
+  return top;
+}
+
+function setUpReadingMap(sections, locationType, top) {
+  const select = byId("map-term");
+  const list = byId("map-passages");
+  const count = byId("map-count");
+  const matchesByWord = new Map(top.map(([word]) => [word, { total: 0, excerpts: [] }]));
+  const segmenter = new Intl.Segmenter(undefined, { granularity: "sentence" });
+  sections.forEach((section, index) => {
+    for (const { segment } of segmenter.segment(section)) {
+      const passage = segment.trim();
+      const seen = new Set();
+      for (const match of passage.matchAll(wordPattern)) {
+        const word = normalizeWord(match[0]);
+        const result = matchesByWord.get(word);
+        if (!result || seen.has(word)) continue;
+        seen.add(word);
+        result.total++;
+        if (result.excerpts.length < 5) {
+          const start = Math.max(0, match.index - 90);
+          const end = Math.min(passage.length, match.index + match[0].length + 150);
+          result.excerpts.push({
+            location: `${locationType} ${index + 1}`,
+            before: (start ? "…" : "") + passage.slice(start, match.index),
+            word: match[0],
+            after: passage.slice(match.index + match[0].length, end) + (end < passage.length ? "…" : "")
+          });
+        }
+      }
+    }
+  });
+
+  select.replaceChildren(...top.map(([word]) => new Option(word, word)));
+  select.disabled = !top.length;
+  select.onchange = () => {
+    list.replaceChildren();
+    const result = matchesByWord.get(select.value);
+    if (!result) {
+      count.textContent = "No frequent words to trace.";
+      return;
+    }
+    count.textContent = `Showing ${result.excerpts.length} of ${result.total} matching passages.`;
+    for (const excerpt of result.excerpts) {
+      const item = document.createElement("li");
+      const location = document.createElement("small");
+      const highlight = document.createElement("mark");
+      location.textContent = excerpt.location;
+      highlight.textContent = excerpt.word;
+      item.append(location, excerpt.before, highlight, excerpt.after);
+      list.append(item);
+    }
+  };
+  select.onchange();
 }
 
 async function getSummary(text) {
@@ -137,9 +194,11 @@ form.addEventListener("submit", async (event) => {
       status.textContent = "Reading PDF…";
       status.hidden = false;
     }
-    const text = pdf ? await extractPdfText(pdf) : byId("text").value.trim();
+    const pages = pdf ? await extractPdfText(pdf) : null;
+    const text = pages ? pages.join("\n").trim() : byId("text").value.trim();
     if (!text) throw new Error("Enter text to analyze.");
-    analyzeLocally(text);
+    const top = analyzeLocally(text);
+    setUpReadingMap(pages || text.split(/\r?\n[\t ]*\r?\n(?:[\t ]*\r?\n)*/), pdf ? "Page" : "Paragraph", top);
     status.hidden = true;
     byId("empty").hidden = true;
     byId("out").hidden = false;
