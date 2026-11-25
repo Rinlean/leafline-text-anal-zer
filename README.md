@@ -15,7 +15,7 @@
 - **Reading Map** — Trace a frequent word back to the original document. See up to five highlighted excerpts for the selected word, with PDF page numbers or paragraph numbers for pasted text. It runs in the browser, including when AI is off.
 - **Optional AI summary** — Copy the result and see the model identifier when OpenRouter provides it. Statistics remain available if the summary fails.
 - **Light and dark modes** — The interface starts with your device preference and remembers your choice.
-- **Responsive workspace** — Results and AI summary have separate panes. On phones, the summary appears before the detailed Results pane.
+- **Responsive workspace** — The editor, Results, and AI summary share one row on extra-wide screens. At laptop widths, the editor sits above the two output panes. On phones, the summary appears before the detailed results.
 
 ## Quick start
 

@@ -19,7 +19,7 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 body { margin: 0; }
-.frame { width: min(1160px, calc(100% - 40px)); margin-inline: auto; }
+.frame { width: min(1480px, calc(100% - clamp(40px, 6vw, 96px))); margin-inline: auto; }
 .site-header { background: var(--surface); border-bottom: 1px solid var(--line); }
 .header-inner, .brand, .theme-toggle, .section-heading {
   display: flex; align-items: center; gap: 12px;
@@ -67,8 +67,14 @@ h1 { font: 400 clamp(2.65rem, 6vw, 5rem)/.98 "Instrument Serif", Georgia, serif;
 .paper i:last-child { width: 58%; }
 p, small { line-height: 1.55; }
 small, #empty { color: var(--muted); }
-.workspace { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 20px; align-items: start; padding-bottom: 44px; }
-.workspace { grid-template-areas: "source source" "results summary"; }
+.workspace {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas: "source source" "results summary";
+  gap: clamp(20px, 2.25vw, 36px);
+  align-items: start;
+  padding-bottom: 44px;
+}
 #analysis-form { grid-area: source; }
 .results { grid-area: results; }
 .summary-pane { grid-area: summary; }
@@ -81,7 +87,7 @@ small, #empty { color: var(--muted); }
 h2 { font-size: 1.35rem; margin-bottom: 18px; letter-spacing: -.035em; }
 h3 { font-size: 1rem; }
 form > label, #text-source > label, .attachment > label { display: block; font-size: .9rem; font-weight: 650; margin-bottom: 8px; }
-.source-switch { border: 0; min-width: 0; margin: 0 0 16px; padding: 4px; display: flex; gap: 4px; background: var(--soft); border-radius: 12px; }
+.source-switch { border: 0; min-width: 0; margin: 0 0 16px; padding: 4px; display: flex; gap: 8px; background: var(--soft); border-radius: 12px; }
 .source-switch legend { font-size: .9rem; font-weight: 650; margin-bottom: 8px; }
 .source-switch label {
   display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; flex: 1;
@@ -127,7 +133,7 @@ dd { margin: 5px 0 0; font-size: clamp(1.25rem, 3vw, 2rem); font-weight: 750; co
 #empty strong { color: var(--ink); }
 #empty p { max-width: 33ch; }
 .empty-mark { margin-bottom: 5px; }
-.result-section { border-top: 1px solid var(--line); margin-top: 20px; padding-top: 17px; }
+.result-section { border-top: 1px solid var(--line); margin-top: 26px; padding-top: 22px; }
 #freq { padding-inline-start: 22px; margin: 10px 0; overflow-wrap: anywhere; }
 #freq li { padding: 4px 0; }
 .map-help { color: var(--muted); margin: 6px 0 12px; }
@@ -135,10 +141,10 @@ dd { margin: 5px 0 0; font-size: clamp(1.25rem, 3vw, 2rem); font-weight: 750; co
 .map-passages { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
 .map-passages li { background: var(--soft); border-radius: 9px; padding: 10px 12px; overflow-wrap: anywhere; }
 .map-passages mark { background: var(--green); color: var(--on-green); border-radius: 3px; }
-#sum { margin-top: 10px; white-space: pre-wrap; overflow-wrap: anywhere; }
+#sum { margin-top: 14px; max-width: 65ch; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
 #model, #copy-status { margin-top: 8px; overflow-wrap: anywhere; }
-@media (min-width: 1080px) {
-  .workspace { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, .9fr); grid-template-areas: "source results summary"; }
+@media (min-width: 1400px) {
+  .workspace { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-areas: "source results summary"; }
 }
 @media (max-width: 760px) {
   .workspace { grid-template-columns: 1fr; grid-template-areas: "source" "summary" "results"; }
