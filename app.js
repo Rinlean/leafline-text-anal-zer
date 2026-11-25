@@ -4,6 +4,8 @@ const fileInput = byId("pdf");
 const removePdf = byId("remove-pdf");
 const status = byId("status");
 const summary = byId("sum");
+const summarySection = byId("summary-section");
+const summaryPlaceholder = byId("summary-placeholder");
 const copy = byId("copy");
 const model = byId("model");
 
@@ -159,6 +161,13 @@ copy.addEventListener("click", async () => {
 });
 
 const form = byId("analysis-form");
+function resetSummary() {
+  summarySection.hidden = true;
+  summaryPlaceholder.hidden = false;
+  summaryPlaceholder.textContent = "Analyze a document with AI enabled to see its summary.";
+  copy.disabled = true;
+}
+
 const source = form.elements.namedItem("source");
 function showSource() {
   const usePdf = source.value === "pdf";
@@ -172,6 +181,7 @@ form.addEventListener("change", (event) => {
     status.hidden = true;
     byId("empty").hidden = false;
     byId("out").hidden = true;
+    resetSummary();
   }
 });
 
@@ -187,6 +197,7 @@ form.addEventListener("submit", async (event) => {
   status.hidden = true;
   byId("empty").hidden = false;
   byId("out").hidden = true;
+  resetSummary();
 
   try {
     if (usePdf && !pdf) throw new Error("Choose a PDF to analyze.");
@@ -202,9 +213,13 @@ form.addEventListener("submit", async (event) => {
     status.hidden = true;
     byId("empty").hidden = true;
     byId("out").hidden = false;
-    byId("summary-section").hidden = !includeSummary;
-    if (!includeSummary) return;
+    if (!includeSummary) {
+      summaryPlaceholder.textContent = "AI summarization was off for this analysis.";
+      return;
+    }
 
+    summaryPlaceholder.hidden = true;
+    summarySection.hidden = false;
     summary.textContent = "Generating summary…";
     model.hidden = true;
     copy.disabled = true;

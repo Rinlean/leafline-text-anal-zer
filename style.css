@@ -68,6 +68,12 @@ h1 { font: 400 clamp(2.65rem, 6vw, 5rem)/.98 "Instrument Serif", Georgia, serif;
 p, small { line-height: 1.55; }
 small, #empty { color: var(--muted); }
 .workspace { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 20px; align-items: start; padding-bottom: 44px; }
+.workspace { grid-template-areas: "source source" "results summary"; }
+#analysis-form { grid-area: source; }
+.results { grid-area: results; }
+.summary-pane { grid-area: summary; }
+.summary-pane h2 { margin: 0; }
+#summary-placeholder { color: var(--muted); margin-top: 16px; }
 .panel {
   min-width: 0; padding: clamp(18px, 3vw, 30px); background: var(--surface);
   border: 1px solid var(--line); border-radius: 20px;
@@ -131,8 +137,11 @@ dd { margin: 5px 0 0; font-size: clamp(1.25rem, 3vw, 2rem); font-weight: 750; co
 .map-passages mark { background: var(--green); color: var(--on-green); border-radius: 3px; }
 #sum { margin-top: 10px; white-space: pre-wrap; overflow-wrap: anywhere; }
 #model, #copy-status { margin-top: 8px; overflow-wrap: anywhere; }
+@media (min-width: 1080px) {
+  .workspace { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, .9fr); grid-template-areas: "source results summary"; }
+}
 @media (max-width: 760px) {
-  .workspace { grid-template-columns: 1fr; }
+  .workspace { grid-template-columns: 1fr; grid-template-areas: "source" "summary" "results"; }
   .intro { margin-top: 18px; }
 }
 @media (max-width: 520px) {

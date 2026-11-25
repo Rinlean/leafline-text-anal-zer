@@ -71,12 +71,6 @@
             <div><dt>Unique words</dt><dd id="unique"></dd></div>
             <div><dt>Characters</dt><dd id="characters"></dd></div>
           </dl>
-          <section id="summary-section" class="result-section" hidden>
-            <div class="section-heading"><h3>AI summary</h3><button id="copy" class="secondary" type="button" disabled>Copy</button></div>
-            <p id="sum" aria-live="polite"></p>
-            <small id="model" hidden></small>
-            <small id="copy-status" role="status"></small>
-          </section>
           <section class="result-section">
             <h3>Most frequent words</h3>
             <ol id="freq"></ol>
@@ -90,6 +84,18 @@
             <small id="map-count" role="status"></small>
             <ol id="map-passages" class="map-passages"></ol>
           </section>
+        </div>
+      </section>
+      <section class="panel summary-pane" aria-labelledby="summary-title">
+        <div class="section-heading">
+          <h2 id="summary-title">AI summary</h2>
+          <button id="copy" class="secondary" type="button" disabled>Copy</button>
+        </div>
+        <p id="summary-placeholder">Analyze a document with AI enabled to see its summary.</p>
+        <div id="summary-section" hidden>
+          <p id="sum" aria-live="polite"></p>
+          <small id="model" hidden></small>
+          <small id="copy-status" role="status"></small>
         </div>
       </section>
     </div>
